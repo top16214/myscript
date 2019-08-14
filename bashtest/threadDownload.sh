@@ -1,14 +1,8 @@
 #!/bin/bash
 
 # determine str is dir
-function isDir(){
-    if [[ "$1" =~ "#" ]];then
-        echo "Y"
-    else
-        echo "N"
-    fi
+function isDir() [[ "$1" =~ "#" ]]
 
-}
 
 
 function md(){
@@ -75,7 +69,6 @@ function flush(){
     download
 }
 
-
 function main(){
 
     FILE="./down.lst"
@@ -84,11 +77,11 @@ function main(){
     tmp_fifofile="/tmp/$$.fifo"
     mkfifo $tmp_fifofile        # 新建一个fifo类型的文件
     exec 6<>$tmp_fifofile       # 将fd6指向fifo类型
-    rm $tmp_fifofile            #删也可以
+    rm $tmp_fifofile            # 删也可以
 
 
-    thread_num=5  # 最大可同时执行线程数量
-    #根据线程总数量设置令牌个数
+    thread_num=10               # 最大可同时执行线程数量
+    # 根据线程总数量设置令牌个数
     for ((i=0;i<${thread_num};i++));do
         echo
     done >&6
@@ -97,8 +90,7 @@ function main(){
     while IFS="" read -r line
     do
 
-        if [ $(isDir "$line") = "Y" ];then
-            # echo "当前目录：$line"
+        if isDir "$line";then
             if [ ${#nameArray[@]} -eq 0 ];then
                 echo "...Start..."
             else
@@ -120,7 +112,7 @@ function main(){
 
     flush
 
-    exec 6>&- # 关闭fd6
+    exec 6>&-                   # 关闭fd6
     echo "over"
 
 }
